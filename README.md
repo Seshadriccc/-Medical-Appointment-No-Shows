@@ -1,26 +1,63 @@
-# Data Cleaning and Preprocessing Task
+# 📊 Task 7 – Basic Sales Summary using SQLite and Python
 
-## Overview
-This repository contains the solution for Task 1 of the Data Analyst Internship: Data Cleaning and Preprocessing. The dataset used is the "Medical Appointment No Shows" dataset from Kaggle.
+## 🧠 Objective
+To create a basic SQLite database and use Python with SQL to:
+- Summarize total quantity sold and revenue per product
+- Display the result using a bar chart
 
-## Steps Performed
-- Loaded the dataset (`KaggleV2-May-2016.csv`).
-- Identified and handled missing values by dropping rows with missing critical columns.
-- Removed duplicate rows.
-- Renamed columns to lowercase with underscores (e.g., 'no-show' to 'no_show').
-- Converted date columns to datetime format.
-- Standardized text values (e.g., Gender to 'M'/'F', No-show to 1/0).
-- Filtered ages to be between 0 and 100.
-- Dropped unnecessary columns (PatientId, AppointmentID).
-- Saved the cleaned dataset as `cleaned_medical_appointments.csv`.
+---
 
-## Files
-- `data_cleaning.py`: Python script for cleaning the dataset.
-- `KaggleV2-May-2016.csv`: Raw dataset (or link to Kaggle: https://www.kaggle.com/datasets/joniarroba/noshowappointments).
-- `cleaned_medical_appointments.csv`: Cleaned dataset.
-- Screenshots: Terminal output showing the script execution.
+## 🧰 Tools & Libraries Used
+- Python 3
+- SQLite3 (built-in with Python)
+- pandas (for SQL data handling)
+- matplotlib (for bar chart visualization)
+- Visual Studio Code
 
-## How to Run
-1. Place `KaggleV2-May-2016.csv` in the same directory as `data_cleaning.py`.
-2. Run the script using: `python data_cleaning.py`.
-3. The cleaned dataset will be saved as `cleaned_medical_appointments.csv`.
+---
+
+## 📁 Project Files
+
+| File Name         | Description                                      |
+|------------------|--------------------------------------------------|
+| `sales_data.db`   | SQLite database file containing sales data       |
+| `task7.py`        | Python script that creates DB, runs analysis     |
+| `sales_chart.png` | Bar chart of revenue by product (auto-generated)|
+| `README.md`       | Task explanation and instructions                |
+
+---
+
+## ⚙️ How It Works
+
+### 🔹 Steps: Database Creation (in `task7.py`)
+```python
+import sqlite3
+
+# Connect to or create the database
+conn = sqlite3.connect('sales_data.db')
+cursor = conn.cursor()
+
+# Create table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS sales (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    price REAL NOT NULL
+)
+''')
+
+# Insert sample data
+sample_data = [
+    ('Pen', 10, 5.0),
+    ('Notebook', 5, 15.0),
+    ('Pencil', 20, 2.5),
+    ('Pen', 7, 5.0),
+    ('Notebook', 3, 15.0),
+    ('Pencil', 10, 2.5)
+]
+cursor.executemany('INSERT INTO sales (product, quantity, price) VALUES (?, ?, ?)', sample_data)
+
+conn.commit()
+conn.close()
+print("Database created and data inserted successfully!")
